@@ -10,17 +10,22 @@ import org.openmrs.module.appointments.model.Appointment;
 import org.openmrs.module.appointments.model.AppointmentProvider;
 import org.openmrs.module.appointments.service.TeleconsultationAppointmentNotificationService;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 
 public class TeleconsultationAppointmentNotificationServiceImpl implements TeleconsultationAppointmentNotificationService {
     private final static String EMAIL_SUBJECT = "teleconsultation.appointment.email.subject";
     private final static String EMAIL_BODY = "teleconsultation.appointment.email.body";
+    private final static String EMAIL_LOGO = "teleconsultation.appointment.email.logo";
 
     private Log log = LogFactory.getLog(this.getClass());
 
     private EmailNotificationService emailNotificationService;
+
+    private EmailTemplateConfig emailTemplateConfig = new EmailTemplateConfig();
 
     private TeleconsultationAppointmentService teleconsultationAppointmentService = new TeleconsultationAppointmentService();
 
@@ -34,41 +39,64 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
         String link = teleconsultationAppointmentService.getTeleconsultationURL(appointment);
         Patient patient = appointment.getPatient();
         String email = patient.getAttribute("email").getValue();
-        if (email != null) {
-            String patientName = appointment.getPatient().getGivenName();
-            String doctor = "";
-            if(appointment.getProviders() != null) {
-                AppointmentProvider provider = appointment.getProviders().iterator().next();
-                doctor = " with Dr. " + provider.getProvider().getPerson().getGivenName();
+        try {
+            if (email != null) {
+                String patientName = appointment.getPatient().getGivenName();
+                String doctor = "";
+                if (appointment.getProviders() != null) {
+                    AppointmentProvider provider = appointment.getProviders().iterator().next();
+                    doctor = " with Dr. " + provider.getProvider().getPerson().getGivenName();
+                }
+                Date appointmentStart = appointment.getStartDateTime();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(appointmentStart);
+                calendar.add(Calendar.HOUR_OF_DAY, 5);
+                calendar.add(Calendar.MINUTE, 30);
+                appointmentStart = calendar.getTime();
+                String day = new SimpleDateFormat("EEEE").format(appointmentStart);
+                String date = new SimpleDateFormat("dd/MM/yy").format(appointmentStart);
+                String time = new SimpleDateFormat("hh:mm a").format(appointmentStart);
+
+                Properties properties = emailTemplateConfig.getProperties();
+                String emailSubject = null;
+                String emailBody = null;
+                String emailLogo = null;
+                if (properties != null) {
+                    emailBody = properties.getProperty("email.body");
+                    emailSubject = properties.getProperty("email.body");
+                    emailLogo = properties.getProperty("email.logo");
+                }
+                else {
+                    emailBody = EMAIL_BODY;
+                    emailSubject = EMAIL_SUBJECT;
+                    emailLogo = EMAIL_LOGO;
+                }
+
+
+                emailNotificationService.send(
+                        Context.getMessageSourceService().getMessage(emailSubject, null, null),
+                        Context.getMessageSourceService().getMessage(
+                                emailBody,
+                                new Object[]{
+                                        patientName,
+                                        doctor,
+                                        day,
+                                        date,
+                                        time,
+                                        link
+                                },
+                                null
+                        ),
+                        new String[]{email},
+                        null,
+                        null,
+                        emailLogo);
+
+            } else {
+                log.warn("Attempting to send an email to a patient without an email address");
             }
-            Date appointmentStart = appointment.getStartDateTime();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(appointmentStart);
-            calendar.add(Calendar.HOUR_OF_DAY, 5);
-            calendar.add(Calendar.MINUTE, 30);
-            appointmentStart = calendar.getTime();
-            String day = new SimpleDateFormat("EEEE").format(appointmentStart);
-            String date = new SimpleDateFormat("dd/MM/yy").format(appointmentStart);
-            String time = new SimpleDateFormat("hh:mm a").format(appointmentStart);
-            emailNotificationService.send(
-                    Context.getMessageSourceService().getMessage(EMAIL_SUBJECT, null, null),
-                    Context.getMessageSourceService().getMessage(
-                            EMAIL_BODY,
-                            new Object[]{
-                                    patientName,
-                                    doctor,
-                                    day,
-                                    date,
-                                    time,
-                                    link
-                            },
-                            null
-                    ),
-                    new String[] { email },
-                    null,
-                    null);
-        } else {
-            log.warn("Attempting to send an email to a patient without an email address");
+        }catch (IOException e){
+            throw new EmailNotificationException("Unable to load email-notification.properties, see details in README", e);
         }
     }
 

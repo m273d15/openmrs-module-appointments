@@ -64,7 +64,8 @@ public class TeleconsultationAppointmentNotificationServiceImplTest {
                 eq("Email body"),
                 AdditionalMatchers.aryEq(new String[]{ "someemail@gmail.com" }),
                 any(),
-                any());
+                any(),
+                null);
     }
 
     @Ignore
@@ -75,7 +76,7 @@ public class TeleconsultationAppointmentNotificationServiceImplTest {
         when(messageSourceService.getMessage("teleconsultation.appointment.email.subject", null, null)).thenReturn("Email subject");
         when(messageSourceService.getMessage("teleconsultation.appointment.email.body", new Object[]{ link }, null)).thenReturn("Link");
         when(Context.getMessageSourceService()).thenReturn(messageSourceService);
-        doThrow(new EmailNotificationException("Some error", new Exception())).when(emailNotificationService).send(any(), any(), any(), any(), any());
+        doThrow(new EmailNotificationException("Some error", new Exception())).when(emailNotificationService).send(any(), any(), any(), any(), any(), any());
         expectedException.expect(EmailNotificationException.class);
 
         teleconsultationAppointmentNotificationService.sendTeleconsultationAppointmentLinkEmail(appointment);
