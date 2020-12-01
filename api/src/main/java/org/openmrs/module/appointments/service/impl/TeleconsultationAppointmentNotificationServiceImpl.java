@@ -91,8 +91,6 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                         null,
                         null,
                         emailLogo);
-                log.warn("Attempting to send an email to a patient with an email address 111");
-
             } else {
                 log.warn("Attempting to send an email to a patient without an email address");
             }
