@@ -25,6 +25,12 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean package -Duser.timezone=IST -Dmaven.test.skip=true
+      
+      - run: mkdir staging && cp omod/target/*.omod staging
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: staging
 
       - name: Package
         run: |
