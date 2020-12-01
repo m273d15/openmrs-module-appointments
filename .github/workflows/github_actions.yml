@@ -13,10 +13,10 @@ jobs:
       - name: Define variables
         run: |
           PACKAGE_VERSION=0.0.${{ github.run_number }}
-          echo "PACKAGE_VERSION = $PACKAGE_VERSION">> $GITHUB_ENV
-          echo "PACKAGE_FILENAME = openmrs_appointments.$PACKAGE_VERSION.zip">> $GITHUB_ENV
-          echo "OCTOPUS_SERVER = https://${{ secrets.OCTOPUS_ORG }}.octopus.app/">> $GITHUB_ENV
-          echo "OCTOPUS_ENVIROMENT = QA-DEMO">> $GITHUB_ENV
+           echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          echo "PACKAGE_FILENAME=openmrs_appointments_app.$PACKAGE_VERSION.zip" >> $GITHUB_ENV
+          echo "OCTOPUS_SERVER=https://${{ secrets.OCTOPUS_ORG }}.octopus.app/" >> $GITHUB_ENV
+          echo "OCTOPUS_ENVIROMENT=QA-DEMO" >> $GITHUB_ENV
 
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
