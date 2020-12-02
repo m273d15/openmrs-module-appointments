@@ -67,7 +67,6 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                     emailLogo = EMAIL_LOGO;
                 }
 
-
                 emailNotificationService.send(
                         Context.getMessageSourceService().getMessage(emailSubject, null, null),
                         Context.getMessageSourceService().getMessage(
@@ -85,7 +84,7 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                         new String[]{email},
                         null,
                         null,
-                        emailLogo);
+                        Context.getMessageSourceService().getMessage(emailLogo, null, null));
             } else {
                 log.warn("Attempting to send an email to a patient without an email address");
             }
