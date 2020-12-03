@@ -125,6 +125,13 @@
 <!--				</configuration>-->
 <!--			</plugin>-->
 <!--		</plugins>-->
+		<extensions>
+			<extension>
+				<groupId>com.github.platform-team</groupId>
+				<artifactId>aws-maven</artifactId>
+				<version>6.0.0</version>
+			</extension>
+		</extensions>
 	</build>
 
 	<dependencyManagement>
@@ -200,7 +207,7 @@
 			<dependency>
 				<groupId>org.bahmni.module</groupId>
 				<artifactId>email-notification-omod</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>0.0.1-SNAPSHOT</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
@@ -289,6 +296,11 @@
 				<snapshots>
 					<enabled>false</enabled>
 				</snapshots>
+			</repository>
+			<repository>
+				<id>email-notification</id>
+				<name>Email Notification</name>
+				<url>https://bahmni-email-notification.s3.ap-south-1.amazonaws.com/snapshot/</url>
 			</repository>
 		</repositories>
 
