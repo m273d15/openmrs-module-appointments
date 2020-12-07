@@ -46,7 +46,7 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                 String doctor = "";
                 if (appointment.getProviders() != null) {
                     AppointmentProvider provider = appointment.getProviders().iterator().next();
-                    doctor = " with Dr. " + provider.getProvider().getPerson().getGivenName();
+                    doctor = " with Dr. " + provider.getProvider().getPerson().getGivenName()+" "+provider.getProvider().getPerson().getFamilyName();
                 }
                 Date appointmentStart = appointment.getStartDateTime();
                 String day = new SimpleDateFormat("EEEE").format(appointmentStart);
@@ -69,7 +69,7 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                 }
 
                 emailNotificationService.send(
-                        Context.getMessageSourceService().getMessage(emailSubject, null, null),
+                        Context.getMessageSourceService().getMessage(emailSubject, new Object[]{doctor}, null),
                         Context.getMessageSourceService().getMessage(
                                 emailBody,
                                 new Object[]{
