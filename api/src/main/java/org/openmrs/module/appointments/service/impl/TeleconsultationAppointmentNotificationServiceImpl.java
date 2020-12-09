@@ -13,7 +13,7 @@ import org.openmrs.module.appointments.service.TeleconsultationAppointmentNotifi
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -52,8 +52,8 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                 }
                 Date appointmentStart = appointment.getStartDateTime();
                 ZoneId zone = ZoneId.of(appointment.getTimezone());
-                LocalDateTime now = LocalDateTime.now();
-                ZoneOffset zoneOffSet = zone.getRules().getOffset(now);
+                Instant instant = Instant.now();
+                ZoneOffset zoneOffSet = zone.getRules().getOffset(instant);
                 long offset = zoneOffSet.getTotalSeconds() * 1000;
                 Date localDate = new Date(appointmentStart.getTime() + offset);
                 String day = new SimpleDateFormat("EEEE").format(localDate);
