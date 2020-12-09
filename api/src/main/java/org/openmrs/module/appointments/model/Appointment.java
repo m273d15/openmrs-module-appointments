@@ -33,6 +33,7 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
     private AppointmentRecurringPattern appointmentRecurringPattern;
     private Set<AppointmentAudit> appointmentAudits = new HashSet<>();
     private Appointment relatedAppointment;
+    private String timezone;
 
     public Set<AppointmentAudit> getAppointmentAudits() {
         return appointmentAudits;
@@ -213,6 +214,14 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 
     public Boolean isEmailIdAvailable() {
         return this.patient.getAttribute("email") != null ? true : false;
+    }
+
+    public String getTimezone() {
+        return this.timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
     }
 }
 

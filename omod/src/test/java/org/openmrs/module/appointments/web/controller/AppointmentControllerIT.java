@@ -82,7 +82,8 @@ public class AppointmentControllerIT extends BaseIntegrationTest {
                     "\"uuid\":\"2d15071d-439d-44e8-9825-aa8e1a30d2a2\"," +
                     "\"comments\":\"available\"," +
                     "\"response\":\"ACCEPTED\"" +
-                "} ] }";
+                "} ] }" +
+                "\"timezoneOffset\": \"Asia/Calcutta\"";
 
         MockHttpServletResponse response = handle(newPostRequest("/rest/v1/appointment", content));
         assertNotNull(response);

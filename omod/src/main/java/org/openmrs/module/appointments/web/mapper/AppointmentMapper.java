@@ -102,6 +102,7 @@ public class AppointmentMapper {
         appointment.setAppointmentKind(AppointmentKind.valueOf(appointmentRequest.getAppointmentKind()));
         appointment.setTeleconsultation(appointmentRequest.isTeleconsultation());
         appointment.setComments(appointmentRequest.getComments());
+        appointment.setTimezone(appointmentRequest.getTimezone());
         mapProvidersForAppointment(appointment, appointmentRequest.getProviders());
     }
 
