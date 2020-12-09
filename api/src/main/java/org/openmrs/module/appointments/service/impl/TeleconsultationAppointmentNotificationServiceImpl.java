@@ -13,8 +13,10 @@ import org.openmrs.module.appointments.service.TeleconsultationAppointmentNotifi
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Properties;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.*;
 
 public class TeleconsultationAppointmentNotificationServiceImpl implements TeleconsultationAppointmentNotificationService {
     private final static String EMAIL_SUBJECT = "teleconsultation.appointment.email.subject";
@@ -49,9 +51,14 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                     doctor = " with Dr. " + provider.getProvider().getPerson().getGivenName()+" "+provider.getProvider().getPerson().getFamilyName();
                 }
                 Date appointmentStart = appointment.getStartDateTime();
-                String day = new SimpleDateFormat("EEEE").format(appointmentStart);
-                String date = new SimpleDateFormat("dd/MM/yy").format(appointmentStart);
-                String time = new SimpleDateFormat("hh:mm a").format(appointmentStart);
+                ZoneId zone = ZoneId.of(appointment.getTimezone());
+                LocalDateTime now = LocalDateTime.now();
+                ZoneOffset zoneOffSet = zone.getRules().getOffset(now);
+                long offset = zoneOffSet.getTotalSeconds() * 1000;
+                Date localDate = new Date(appointmentStart.getTime() + offset);
+                String day = new SimpleDateFormat("EEEE").format(localDate);
+                String date = new SimpleDateFormat("dd/MM/yy").format(localDate);
+                String time = new SimpleDateFormat("hh:mm a").format(localDate) + " " + appointment.getTimezone();
 
                 Properties properties = emailTemplateConfig.getProperties();
                 String emailSubject = null;

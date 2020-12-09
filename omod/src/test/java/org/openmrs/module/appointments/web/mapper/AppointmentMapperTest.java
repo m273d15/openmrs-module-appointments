@@ -408,6 +408,7 @@ public class AppointmentMapperTest {
         providerDetail.setResponse("ACCEPTED");
         providerDetails.add(providerDetail);
         appointmentRequest.setProviders(providerDetails);
+        appointmentRequest.setTimezoneOffset("Asia/Calcutta");
 
         return appointmentRequest;
     }
@@ -637,5 +638,6 @@ public class AppointmentMapperTest {
         assertEquals(AppointmentKind.valueOf(appointmentRequest.getAppointmentKind()), appointment.getAppointmentKind());
         assertEquals(AppointmentStatus.Scheduled, appointment.getStatus());
         assertEquals(appointmentRequest.getComments(), appointment.getComments());
+        assertEquals(appointmentRequest.getTimezone(), appointment.getTimezone());
     }
 }

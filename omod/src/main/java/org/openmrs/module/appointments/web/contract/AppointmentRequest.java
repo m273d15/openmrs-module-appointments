@@ -23,6 +23,15 @@ public class AppointmentRequest {
     private Boolean teleconsultation;
     private String comments;
     private List<AppointmentProviderDetail> providers = new ArrayList<>();
+    private String timezone;
+
+    public String getTimezone() {
+        return this.timezone;
+    }
+
+    public void setTimezoneOffset(String timezone) {
+        this.timezone = timezone;
+    }
 
     public String getAppointmentNumber() {
         return appointmentNumber;
