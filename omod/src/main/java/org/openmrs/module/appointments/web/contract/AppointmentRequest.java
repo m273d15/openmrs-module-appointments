@@ -29,7 +29,7 @@ public class AppointmentRequest {
         return this.timezone;
     }
 
-    public void setTimezoneOffset(String timezone) {
+    public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
 
