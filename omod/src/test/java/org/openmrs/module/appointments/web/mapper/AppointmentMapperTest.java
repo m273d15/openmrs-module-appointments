@@ -408,7 +408,7 @@ public class AppointmentMapperTest {
         providerDetail.setResponse("ACCEPTED");
         providerDetails.add(providerDetail);
         appointmentRequest.setProviders(providerDetails);
-        appointmentRequest.setTimezoneOffset("Asia/Calcutta");
+        appointmentRequest.setTimezone("Asia/Calcutta");
 
         return appointmentRequest;
     }
