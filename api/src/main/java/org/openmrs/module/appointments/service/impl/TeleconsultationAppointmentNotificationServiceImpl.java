@@ -13,15 +13,15 @@ import org.openmrs.module.appointments.service.TeleconsultationAppointmentNotifi
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TeleconsultationAppointmentNotificationServiceImpl implements TeleconsultationAppointmentNotificationService {
     private final static String EMAIL_SUBJECT = "teleconsultation.appointment.email.subject";
     private final static String EMAIL_BODY = "teleconsultation.appointment.email.body";
     private final static String EMAIL_LOGO = "teleconsultation.appointment.email.logo";
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     private Log log = LogFactory.getLog(this.getClass());
 
@@ -51,14 +51,18 @@ public class TeleconsultationAppointmentNotificationServiceImpl implements Telec
                     doctor = " with Dr. " + provider.getProvider().getPerson().getGivenName()+" "+provider.getProvider().getPerson().getFamilyName();
                 }
                 Date appointmentStart = appointment.getStartDateTime();
-                ZoneId zone = ZoneId.of(appointment.getTimezone());
-                Instant instant = Instant.now();
-                ZoneOffset zoneOffSet = zone.getRules().getOffset(instant);
-                long offset = zoneOffSet.getTotalSeconds() * 1000;
-                Date localDate = new Date(appointmentStart.getTime() + offset);
-                String day = new SimpleDateFormat("EEEE").format(localDate);
-                String date = new SimpleDateFormat("dd/MM/yy").format(localDate);
-                String time = new SimpleDateFormat("hh:mm a").format(localDate) + " " + appointment.getTimezone();
+                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+                LocalDateTime now = LocalDateTime.now();
+                ZoneId zone = ZoneId.systemDefault();
+                ZoneOffset zoneOffSet = zone.getRules().getOffset(now);
+                String localString = sdf.format(appointmentStart) + zoneOffSet.toString() + "[" + zone.toString() + "]";
+                ZonedDateTime localZonedDateTime = ZonedDateTime.parse(localString);
+                ZoneId destZone = ZoneId.of(appointment.getTimezone());
+                ZonedDateTime destZonedDateTime = localZonedDateTime.withZoneSameInstant(destZone);
+
+                String day = destZonedDateTime.format(DateTimeFormatter.ofPattern("EEEE"));
+                String date = destZonedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+                String time = destZonedDateTime.format(DateTimeFormatter.ofPattern("hh:mm a z"));
 
                 Properties properties = emailTemplateConfig.getProperties();
                 String emailSubject = null;
