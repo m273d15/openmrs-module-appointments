@@ -1,0 +1,17 @@
+version: 0.0
+os: linux
+files:
+  - source: appointments-1.3.0-SNAPSHOT.omod
+    destination: /opt/openmrs/modules/
+permissions:
+  - object: /opt/openmrs/modules/appointments-1.3.0-SNAPSHOT.omod
+    owner: bahmni
+    group: bahmni
+    mode: 755
+    type:
+      - file
+hooks:
+  BeforeInstall:
+    - location: cleanup.sh
+  AfterInstall:
+    - location: restart_server.sh
